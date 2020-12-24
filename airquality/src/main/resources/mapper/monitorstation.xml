@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.monitorstation">
+
+    <resultMap id="MonitorStationVo" type="finley.gmair.vo.air.MonitorStationVo">
+        <result column="station_id" property="stationId"/>
+        <result column="belong_city_id" property="cityId"/>
+        <result column="station_name" property="stationName"/>
+    </resultMap>
+
+    <insert id="replace" parameterType="finley.gmair.model.air.MonitorStation">
+        REPLACE INTO `gmair_airquality`.`monitor_station`
+        (station_id, belong_city_id, station_name, block_flag)
+        VALUES (
+        #{monitorStation.stationId}, #{monitorStation.belongCityId}, #{monitorStation.stationName},
+        #{monitorStation.blockFlag}
+        )
+    </insert>
+
+    <insert id="replaceBatch" parameterType="java.util.List">
+        REPLACE INTO `gmair_airquality`.`monitor_station`
+        (station_id, belong_city_id, station_name, block_flag)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="monitorStation">
+            (
+            #{monitorStation.stationId}, #{monitorStation.belongCityId}, #{monitorStation.stationName},
+            #{monitorStation.blockFlag}
+            )
+        </foreach>
+    </insert>
+    
+    <select id="select" resultMap="MonitorStationVo">
+        select station_id, belong_city_id, station_name from `gmair_airquality`.`monitor_station`
+        where 1 = 1
+        <if test="cityId != null">
+            and belong_city_id = #{cityId}
+        </if>
+        <if test="stationId != null">
+            and station_id = #{stationId}
+        </if>
+        <if test="stationName != null">
+            and station_name = #{stationName}
+        </if>
+    </select>
+
+    <delete id="empty">
+        delete from `gmair_airquality`.`monitor_station`;
+    </delete>
+</mapper>

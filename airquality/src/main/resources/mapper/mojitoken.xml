@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.mojitoken">
+
+    <resultMap id="mojiTokenVO" type="finley.gmair.model.air.MojiToken">
+        <result column="token_id" property="tokenId" />
+        <result column="token" property="token" />
+        <result column="url" property="url" />
+        <result column="password" property="password" />
+        <result column="base" property="base" />
+        <result column="block_flag" property="blockFlag" />
+        <result column="create_time" property="createAt" />
+    </resultMap>
+
+    <select id="query" resultMap="mojiTokenVO" parameterType="java.util.Map">
+        select token_id, token, url, password , base , block_flag, create_time
+        from `gmair_airquality`.`moji_token`
+        WHERE 1 = 1
+        <if test="tokenId != null">
+            and token_id = #{tokenId}
+        </if>
+        <if test="blockFlag != null">
+            and block_flag = #{blockFlag}
+        </if>
+        order by create_time asc
+    </select>
+
+    <insert id="insert" parameterType="finley.gmair.model.air.MojiToken">
+        insert into gmair_airquality.moji_token(token_id, token, url, password, base, block_flag, create_time)
+        values (#{tokenId}, #{token}, #{url}, #{password}, #{base}, #{blockFlag}, #{createAt})
+    </insert>
+
+</mapper>

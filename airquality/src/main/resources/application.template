@@ -1,0 +1,14 @@
+spring.application.name=airquality-agent
+server.port=8010
+eureka.client.healthcheck=true
+eureka.client.service-url.defaultZone=http://localhost:8000/eureka/
+mybatis.config-location=classpath:mybatis-config.xml
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/gmair_airquality?useLegacyDatetimeCode=false&serverTimezone=CTT&useUnicode=true&characterEncoding=UTF-8
+spring.datasource.username=root
+spring.datasource.password=
+
+spring.cache.type=caffeine
+spring.cache.caffeine.spec=maximumSize=500,expireAfterAccess=3600s
+
+#security.oauth2.resource.user-info-uri=http://localhost:8004/auth/admin

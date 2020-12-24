@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.monitorair">
+
+    <resultMap id="MonitorStationAirQualityVo" type="finley.gmair.vo.air.MonitorStationAirQualityVo">
+        <result column="station_id" property="stationId"/>
+        <result column="belong_city_id" property="cityId"/>
+        <result column="station_name" property="stationName"/>
+        <result column="aqi_index" property="aqi"/>
+        <result column="aqi_level" property="aqiLevel"/>
+        <result column="pri_pollut" property="primePollution"/>
+        <result column="pm_2_5" property="pm25"/>
+        <result column="pm_10" property="pm10"/>
+        <result column="co" property="co"/>
+        <result column="no_2" property="no2"/>
+        <result column="no_3" property="o3"/>
+        <result column="so_2" property="so2"/>
+        <result column="record_time" property="recordTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="finley.gmair.model.air.MonitorStationAirQuality">
+        insert INTO `gmair_airquality`.`station_aqi_full`
+        (station_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time, block_flag, create_time)
+        VALUES
+        (
+         #{stationId}, #{aqi}, #{aqiLevel}, #{primePollution}, #{pm2_5}, #{pm10}, #{co}, #{no2}, #{o3}, #{so2},
+         #{recordTime}, #{blockFlag}, #{createAt}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert INTO `gmair_airquality`.`station_aqi_full`
+        (station_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time, block_flag, create_time)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="airQuality">
+            (
+            #{airQuality.stationId}, #{airQuality.aqi}, #{airQuality.aqiLevel}, #{airQuality.primePollution},
+            #{airQuality.pm2_5}, #{airQuality.pm10}, #{airQuality.co}, #{airQuality.no2}, #{airQuality.o3},
+            #{airQuality.so2}, #{airQuality.recordTime}, #{airQuality.blockFlag}, #{airQuality.createAt}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertLatest" parameterType="finley.gmair.model.air.MonitorStationAirQuality">
+        replace INTO `gmair_airquality`.`station_aqi_latest`
+        (station_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time, block_flag, create_time)
+        VALUES
+        (
+         #{stationId}, #{aqi}, #{aqiLevel}, #{primePollution}, #{pm2_5}, #{pm10}, #{co}, #{no2}, #{o3}, #{so2},
+         #{recordTime}, #{blockFlag}, #{createAt}
+        )
+    </insert>
+
+    <insert id="insertLatestBatch" parameterType="java.util.List">
+        replace INTO `gmair_airquality`.`station_aqi_latest`
+        (station_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time, block_flag, create_time)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="airQuality">
+            (
+            #{airQuality.stationId}, #{airQuality.aqi}, #{airQuality.aqiLevel}, #{airQuality.primePollution},
+            #{airQuality.pm2_5}, #{airQuality.pm10}, #{airQuality.co}, #{airQuality.no2}, #{airQuality.o3},
+            #{airQuality.so2}, #{airQuality.recordTime}, #{airQuality.blockFlag}, #{airQuality.createAt}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectLatest" parameterType="java.util.Map" resultMap="MonitorStationAirQualityVo">
+        select
+        station_id, belong_city_id, station_name, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time
+        FROM `gmair_airquality`.`monitor_station_latest_aqi_view`
+        WHERE 1 = 1
+        <if test="stationId != null">
+            and station_id = #{stationId}
+        </if>
+        <if test="cityId != null">
+            and belong_city_id = #{cityId}
+        </if>
+    </select>
+</mapper>

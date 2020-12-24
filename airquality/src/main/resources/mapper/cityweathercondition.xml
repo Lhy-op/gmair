@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.weathercondition.cityweathercondition">
+
+    <resultMap id="cityweatherconditionfull" type="finley.gmair.model.air.CityWeatherCondition">
+        <result column="city_id" property="cityId"></result>
+        <result column="wea_condition" property="condition"></result>
+        <result column="wea_condition_id" property="conditionId"></result>
+        <result column="wea_humidity" property="humidity"></result>
+        <result column="wea_pressure" property="pressure"></result>
+        <result column="real_feel" property="realFeel"></result>
+        <result column="sun_rise" property="sunRise"></result>
+        <result column="sun_set" property="sunSet"></result>
+        <result column="temp" property="temp"></result>
+        <result column="one_tips" property="tips"></result>
+        <result column="uvi" property="uvi"></result>
+        <result column="vis" property="vis"></result>
+        <result column="wind_degress" property="windDegress"></result>
+        <result column="wind_dir" property="windDir"></result>
+        <result column="wind_level" property="windLevel"></result>
+        <result column="wind_speed" property="windSpeed"></result>
+        <result column="record_time" property="recordTime"></result>
+        <result column="block_flag" property="blockFlag"></result>
+        <result column="create_time" property="createAt"></result>
+    </resultMap>
+    <resultMap id="CityTempVo" type="finley.gmair.vo.air.CityTempVo">
+        <result column="city_id" property="cityId"/>
+        <result column="temp" property="temp"/>
+        <result column="record_time" property="recordTime"/>
+    </resultMap>
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO `gmair_airquality`.`city_weather_condition_full`
+        (city_id,wea_condition,wea_condition_id,wea_humidity,icon,wea_pressure,real_feel,
+        sun_rise,sun_set,temp,one_tips,uvi,vis,wind_degrees,wind_dir,wind_level,
+        wind_speed,record_time,block_flag,create_time)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="weatherCondition">
+            (
+            #{weatherCondition.cityId},#{weatherCondition.condition},#{weatherCondition.conditionId},
+            #{weatherCondition.humidity},#{weatherCondition.icon},#{weatherCondition.pressure},#{weatherCondition.realFeel},
+            #{weatherCondition.sunRise},#{weatherCondition.sunSet},#{weatherCondition.temp},#{weatherCondition.tips},
+            #{weatherCondition.uvi},#{weatherCondition.vis},#{weatherCondition.windDegrees},
+            #{weatherCondition.windDir},#{weatherCondition.windLevel},#{weatherCondition.windSpeed},
+            #{weatherCondition.recordTime},#{weatherCondition.blockFlag},#{weatherCondition.createAt}
+            )
+        </foreach>
+
+    </insert>
+
+    <select id="select" parameterType="java.util.Map" resultMap="CityTempVo">
+        select
+        city_id, temp, record_time
+        FROM `gmair_airquality`.`city_weather_condition_full`
+        WHERE 1 = 1
+        <if test="cityId != null">
+            and city_id = #{cityId}
+        </if>
+        <if test="recordTime != null">
+            AND record_time = #{recordTime}
+        </if>
+        <if test="recordTimeGT != null">
+            AND record_time > #{recordTimeGT}
+        </if>
+        <if test="recordTimeLT != null">
+            <![CDATA[
+                AND record_time < #{recordTimeLT}
+            ]]>
+        </if>
+    </select>
+</mapper>

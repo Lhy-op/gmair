@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.province">
+
+    <resultMap id="ProvinceAirqualtiyVo" type="finley.gmair.model.air.ProvinceAirQuality">
+        <result column="province_id" property="provinceId"/>
+        <result column="province_name" property="provinceName"/>
+        <result column="pm_2_5" property="pm2_5"/>
+        <result column="aqi_index" property="aqi"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="finley.gmair.model.air.ProvinceAirQuality">
+        replace INTO `gmair_airquality`.`province_airquality`
+        (province_id, province_name, aqi_index, pm_2_5, block_flag, create_time)
+        VALUES
+        (
+        #{provinceId}, #{provinceName} #{aqi}, #{pm2_5}, #{blockFlag}, #{createAt}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        replace INTO `gmair_airquality`.`province_airquality`
+        (province_id, province_name, aqi_index, pm_2_5, block_flag, create_time)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="airQuality">
+            (
+            #{airQuality.provinceId}, #{airQuality.provinceName}, #{airQuality.aqi}, #{airQuality.pm2_5},
+            #{airQuality.blockFlag}, #{airQuality.createAt}
+            )
+        </foreach>
+    </insert>
+
+    <select id="select" parameterType="java.util.Map" resultMap="ProvinceAirqualtiyVo">
+        select
+        province_id, province_name, pm_2_5, aqi_index
+        FROM `gmair_airquality`.`province_airquality`
+        WHERE 1 = 1
+        <if test="provinceId != null">
+            and province_id = #{provinceId}
+        </if>
+        <if test="blockFlag != null">
+            and block_flag = #{blockFlag}
+        </if>
+    </select>
+</mapper>

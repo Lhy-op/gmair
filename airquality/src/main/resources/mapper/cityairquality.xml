@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.cityairquality">
+
+    <resultMap id="CityAirPm25Vo" type="finley.gmair.vo.air.CityAirPm25Vo">
+        <result column="city_id" property="cityId"/>
+        <result column="pm_2_5" property="pm25"/>
+        <result column="record_time" property="recordTime"/>
+    </resultMap>
+
+    <resultMap id="CityAqiFull" type="finley.gmair.model.air.CityAqiFull">
+        <result column="city_id" property="cityId"></result>
+        <result column="aqi_index" property="aqi"></result>
+        <result column="aqi_level" property="aqiLevel"></result>
+        <result column="pri_pollut" property="primePollution"></result>
+        <result column="pm_2_5" property="pm2_5"></result>
+        <result column="pm_10" property="pm10"></result>
+        <result column="co" property="co"></result>
+        <result column="no_2" property="no2"></result>
+        <result column="o_3" property="o3"></result>
+        <result column="so_2" property="so2"></result>
+        <result column="record_time" property="recordTime"></result>
+        <result column="block_flag" property="blockFlag"></result>
+        <result column="create_time" property="createAt"></result>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="finley.gmair.model.air.CityAirQuality">
+        INSERT INTO `gmair_airquality`.`city_aqi_full`
+        (city_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time
+        ,block_flag, create_time)
+        VALUES
+        (
+        #{cityId}, #{aqi}, #{aqiLevel}, #{primePollution},
+        #{pm2_5}, #{pm10}, #{co}, #{no2}, #{o3},
+        #{so2}, #{recordTime}, #{blockFlag}, #{createAt}
+        )
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO `gmair_airquality`.`city_aqi_full`
+        (city_id, aqi_index, aqi_level, pri_pollut, pm_2_5, pm_10, co, no_2, o_3, so_2, record_time
+        ,block_flag, create_time)
+        VALUES
+        <foreach collection="list" separator="," index="index" item="airQuality">
+            (
+            #{airQuality.cityId}, #{airQuality.aqi}, #{airQuality.aqiLevel}, #{airQuality.primePollution},
+            #{airQuality.pm2_5}, #{airQuality.pm10}, #{airQuality.co}, #{airQuality.no2}, #{airQuality.o3},
+            #{airQuality.so2}, #{airQuality.recordTime}, #{airQuality.blockFlag}, #{airQuality.createAt}
+            )
+        </foreach>
+    </insert>
+
+    <select id="select" parameterType="java.util.Map" resultMap="CityAirPm25Vo">
+        select
+        city_id, pm_2_5, record_time
+        FROM `gmair_airquality`.`city_aqi_full`
+        WHERE 1 = 1
+        <if test="cityId != null">
+            and city_id = #{cityId}
+        </if>
+        <if test="recordTime != null">
+            AND record_time = #{recordTime}
+        </if>
+        <if test="recordTimeGT != null">
+            AND record_time > #{recordTimeGT}
+        </if>
+        <if test="recordTimeLT != null">
+            <![CDATA[
+                AND record_time < #{recordTimeLT}
+            ]]>
+        </if>
+    </select>
+
+    <select id="selectAqiFull" parameterType="java.util.Map" resultMap="CityAqiFull">
+        select city_id,aqi_index,aqi_level,pri_pollut,pm_2_5,pm_10,co,no_2,o_3,so_2,record_time,block_flag,create_time
+        from gmair_airquality.city_aqi_full
+        where 1=1
+        <if test="cityId != null">
+            and city_id = #{cityId}
+        </if>
+        order by create_time desc
+    </select>
+
+    <delete id="empty">
+        DELETE from `gmair_airquality`.`city_latest_aqi`;
+    </delete>
+</mapper>

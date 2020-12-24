@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gmair.airquality.cityUrl">
+
+    <resultMap id="cityUrlVO" type="finley.gmair.vo.air.CityUrlVo">
+        <result column="city_id" property="cityId" />
+        <result column="city_url" property="cityUrl" />
+        <result column="block_flag" property="blockFlag" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <insert id="replace" parameterType="finley.gmair.model.air.CityUrl">
+        replace INTO `gmair_airquality`.`city_url`
+        (city_id, city_url, block_flag, create_time)
+        VALUES
+        (#{cityUrl.cityId}, #{cityUrl.cityUrl}, #{cityUrl.blockFlag}, #{cityUrl.createAt})
+    </insert>
+
+    <insert id="replaceBatch" parameterType="java.util.List">
+        replace INTO `gmair_airquality`.`city_url`
+        (city_id, city_url, block_flag, create_time)
+        VALUES
+        <foreach collection="list" item="cityUrl" separator="," index="index">
+            (#{cityUrl.cityId}, #{cityUrl.cityUrl}, #{cityUrl.blockFlag}, #{cityUrl.createAt})
+        </foreach>
+    </insert>
+
+    <select id="select" resultMap="cityUrlVO" parameterType="java.util.Map">
+        select city_id, city_url, block_flag, create_time from `gmair_airquality`.`city_url`
+        WHERE 1 = 1
+        <if test="cityId != null">
+            and city_id = #{cityId}
+        </if>
+    </select>
+
+</mapper>
